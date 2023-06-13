@@ -1,4 +1,5 @@
 const mongoose=require("mongoose")
+const {bool} = require("sharp");
 
 
 var productSchema = new mongoose.Schema(
@@ -7,6 +8,10 @@ var productSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true,
+        },
+        isNew:{
+            type: Boolean,
+            required: true,
         },
         slug: {
             type: String,

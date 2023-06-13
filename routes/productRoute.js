@@ -23,8 +23,8 @@ router.put("/upload/:id", authMiddleware,
 router.put("/wishlist", authMiddleware, addToWishlist);
 router.post("/",authMiddleware, createProduct);
 router.get("/:id", getaProduct);
-router.put("/:id", authMiddleware, isAdmin, updateProduct);
-router.delete("/:id",authMiddleware, isAdmin,  deleteProduct);
+router.put("/:id", authMiddleware, updateProduct);
+router.delete("/:id",authMiddleware, deleteProduct);
 router.get("/", getAllProduct);
 
 
