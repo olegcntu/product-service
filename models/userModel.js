@@ -34,14 +34,59 @@ var userSchema = new mongoose.Schema({
             type: String,
             default: "user"
         },
-        cart: {
-            type: Array,
-            default: []
-        },
+        cart: [{
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+            },
+            quantity: {
+                type: Number,
+                default: 1,
+            },
+        }],
+        buyers:[
+            {
+                product: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Product",
+                },
+                quantity: {
+                    type: Number,
+                    default: 1,
+                },
+                firstname: {
+                    type: String,
+                    required: true
+                },
+                lastname: {
+                    type: String,
+                    required: true
+                },
+                address: {
+                    type: String,
+                    required: true
+                },
+                city: {
+                    type: String,
+                    required: true
+                },
+                email: {
+                    type: String,
+                    required: true,
+                    unique: true
+                },
+                mobile: {
+                    type: String,
+                    required: true,
+                    unique: true
+                },
+            }
+        ],
         address: {
             type: String,
         },
         wishlist: [{type: mongoose.Schema.Types.ObjectId, ref: "Product"}],
+        compare: [{type: mongoose.Schema.Types.ObjectId, ref: "Product"}],
         refreshToken: {
             type: String,
         },

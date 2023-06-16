@@ -188,11 +188,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
 
 
 const addToWishlist = asyncHandler(async (req, res) => {
-    console.log("1")
     const {_id} = req.user._id;
     const {productId} = req.body;
-    console.log(productId)
-    console.log(_id)
     try {
         const user = await User.findById(_id);
         const alreadyadded = user.wishlist.find((id) => id.toString() === productId);
@@ -223,6 +220,69 @@ const addToWishlist = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
+
+const addToCompare = asyncHandler(async (req, res) => {
+    const {_id} = req.user._id;
+    const {productId} = req.body;
+    try {
+        const user = await User.findById(_id);
+        const alreadyadded = user.compare.find((id) => id.toString() === productId);
+        if (alreadyadded) {
+            let user = await User.findByIdAndUpdate(
+                _id,
+                {
+                    $pull: {compare: productId},
+                },
+                {
+                    new: true,
+                }
+            );
+            res.json(user);
+        } else {
+            let user = await User.findByIdAndUpdate(
+                _id,
+                {
+                    $push: {compare: productId},
+                },
+                {
+                    new: true,
+                }
+            );
+            res.json(user);
+        }
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const addToCart = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const { productId, quantity } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        const existingCartItem = user.cart.find(
+            (item) => item.product.toString() === productId
+        );
+
+        if (existingCartItem) {
+            user.cart = user.cart.filter(
+                (item) => item.product.toString() !== productId
+            );
+
+            await user.save();
+            res.json(user);
+        } else {
+            user.cart.push({ product: productId, quantity });
+            await user.save();
+            res.json(user);
+        }
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+
 
 const uploadImages = asyncHandler(async (req, res) => {
     const {id} = req.params;
@@ -259,5 +319,7 @@ module.exports = {
     addToWishlist,
     rating,
     uploadImages,
-    getaProductForUser
+    getaProductForUser,
+    addToCompare,
+    addToCart
 };
