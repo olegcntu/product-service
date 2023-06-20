@@ -34,6 +34,7 @@ var userSchema = new mongoose.Schema({
             type: String,
             default: "user"
         },
+
         cart: [{
             product: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +45,7 @@ var userSchema = new mongoose.Schema({
                 default: 1,
             },
         }],
-        buyers:[
+        buyersа:[
             {
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
@@ -56,29 +57,18 @@ var userSchema = new mongoose.Schema({
                 },
                 firstname: {
                     type: String,
-                    required: true
                 },
                 lastname: {
                     type: String,
-                    required: true
                 },
                 address: {
                     type: String,
-                    required: true
                 },
                 city: {
                     type: String,
-                    required: true
-                },
-                email: {
-                    type: String,
-                    required: true,
-                    unique: true
                 },
                 mobile: {
                     type: String,
-                    required: true,
-                    unique: true
                 },
             }
         ],

@@ -10,7 +10,8 @@ const {
     uploadImages,
     getaProductForUser,
     addToCompare,
-    addToCart
+    addToCart,
+    orderCreation
 } = require("../controller/productController");
 const router = express.Router();
 const {authMiddleware, isAdmin} = require("../midddlewares/authMiddleware");
@@ -29,6 +30,7 @@ router.post("/",authMiddleware, createProduct);
 router.get("/:id", getaProduct);
 router.put("/:id", authMiddleware, updateProduct);
 router.delete("/:id",authMiddleware, deleteProduct);
+router.post("/order-creation",authMiddleware, orderCreation);
 router.get("/", getAllProduct);
 
 

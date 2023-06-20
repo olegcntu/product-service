@@ -16,7 +16,7 @@ const createProduct = asyncHandler(async (req, res) => {
             let counter = 1;
 
             while (!isSlugUnique) {
-                const existingProduct = await Product.findOne({ slug: slug });
+                const existingProduct = await Product.findOne({slug: slug});
                 if (existingProduct) {
                     // Slug уже существует, добавляем счетчик к slug
                     slug = `${slug}-${counter}`;
@@ -31,7 +31,7 @@ const createProduct = asyncHandler(async (req, res) => {
         }
 
         const postedby = req.user._id;
-        const newProduct = await Product.create({ ...req.body, user: postedby });
+        const newProduct = await Product.create({...req.body, user: postedby});
         res.json(newProduct);
     } catch (error) {
         throw new Error(error);
@@ -136,10 +136,10 @@ const getaProduct = asyncHandler(async (req, res) => {
 
 const getaProductForUser = asyncHandler(async (req, res) => {
     const id = req.user._id;
-    console.log(id)
     //validateMongoDbId(id);
     try {
-        const findProducts = await Product.find({ user: id });;
+        const findProducts = await Product.find({user: id});
+        ;
         res.json(findProducts);
     } catch (error) {
         throw new Error(error);
@@ -257,7 +257,7 @@ const addToCompare = asyncHandler(async (req, res) => {
 
 const addToCart = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const { productId, quantity } = req.body;
+    const {productId, quantity} = req.body;
 
     try {
         const user = await User.findById(userId);
@@ -273,7 +273,7 @@ const addToCart = asyncHandler(async (req, res) => {
             await user.save();
             res.json(user);
         } else {
-            user.cart.push({ product: productId, quantity });
+            user.cart.push({product: productId, quantity});
             await user.save();
             res.json(user);
         }
@@ -281,7 +281,6 @@ const addToCart = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
-
 
 
 const uploadImages = asyncHandler(async (req, res) => {
@@ -310,6 +309,39 @@ const uploadImages = asyncHandler(async (req, res) => {
     }
 })
 
+const orderCreation = asyncHandler(async (req, res) => {
+    const firstName=req.body.name
+    const lastName=req.body.lastName
+    const address=req.body.address
+    const mobile=req.body.telephone
+    const city=req.body.city
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    const existingCartItem = user.cart
+    for (let i = 0; i < existingCartItem.length; i++) {
+        const order =existingCartItem[i];
+        const product = await Product.findById(order.product);//продукт которій заказали
+        const userBuyer=await User.findById(product.user)//пользователь чей продукт
+        const newBuyer = {
+            product: product,
+            quantity: existingCartItem[i].quantity,
+            firstname: firstName,
+            lastname: lastName,
+            address: address,
+            city: city,
+            mobile: mobile,
+        };
+
+        userBuyer.buyersа.push(newBuyer);
+        await userBuyer.save();
+
+        user.cart = [];
+        await user.save();
+    }
+
+})
+
 module.exports = {
     createProduct,
     getaProduct,
@@ -321,5 +353,6 @@ module.exports = {
     uploadImages,
     getaProductForUser,
     addToCompare,
-    addToCart
+    addToCart,
+    orderCreation
 };
