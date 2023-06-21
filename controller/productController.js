@@ -310,19 +310,19 @@ const uploadImages = asyncHandler(async (req, res) => {
 })
 
 const orderCreation = asyncHandler(async (req, res) => {
-    const firstName=req.body.name
-    const lastName=req.body.lastName
-    const address=req.body.address
-    const mobile=req.body.telephone
-    const city=req.body.city
+    const firstName = req.body.name
+    const lastName = req.body.lastName
+    const address = req.body.address
+    const mobile = req.body.telephone
+    const city = req.body.city
     const userId = req.user._id;
 
     const user = await User.findById(userId);
     const existingCartItem = user.cart
     for (let i = 0; i < existingCartItem.length; i++) {
-        const order =existingCartItem[i];
+        const order = existingCartItem[i];
         const product = await Product.findById(order.product);//продукт которій заказали
-        const userBuyer=await User.findById(product.user)//пользователь чей продукт
+        const userBuyer = await User.findById(product.user)//пользователь чей продукт
         const newBuyer = {
             product: product,
             quantity: existingCartItem[i].quantity,
@@ -342,6 +342,38 @@ const orderCreation = asyncHandler(async (req, res) => {
 
 })
 
+const orderDelete = asyncHandler(async (req, res) => {
+    console.log("1111")
+    const userId = req.user._id;
+    const buyerId = req.body.prodId;
+    const user = await User.findById(userId);
+
+    const buyerIndex = user.buyersа.findIndex(buyer => buyer._id.toString() === buyerId);
+    const productId = user.buyersа[buyerIndex].product;
+    if (buyerIndex !== -1) {
+        user.buyersа.splice(buyerIndex, 1);
+    }
+    console.log(buyerIndex)
+
+
+
+    console.log(productId)
+    const quantityToReduce = req.body.count;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return res.status(404).json({message: 'Product not found'});
+    }
+
+    product.quantity -= quantityToReduce;
+        await product.save();
+        await user.save();
+
+    res.status(200).json({message: "Buyer removed successfully"});
+
+})
+
 module.exports = {
     createProduct,
     getaProduct,
@@ -354,5 +386,6 @@ module.exports = {
     getaProductForUser,
     addToCompare,
     addToCart,
-    orderCreation
+    orderCreation,
+    orderDelete
 };

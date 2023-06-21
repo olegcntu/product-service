@@ -11,7 +11,8 @@ const {
     getaProductForUser,
     addToCompare,
     addToCart,
-    orderCreation
+    orderCreation,
+    orderDelete
 } = require("../controller/productController");
 const router = express.Router();
 const {authMiddleware, isAdmin} = require("../midddlewares/authMiddleware");
@@ -29,8 +30,10 @@ router.put("/cart", authMiddleware, addToCart);
 router.post("/",authMiddleware, createProduct);
 router.get("/:id", getaProduct);
 router.put("/:id", authMiddleware, updateProduct);
+router.delete("/order",authMiddleware, orderDelete);
 router.delete("/:id",authMiddleware, deleteProduct);
 router.post("/order-creation",authMiddleware, orderCreation);
+
 router.get("/", getAllProduct);
 
 
