@@ -6,6 +6,7 @@ const {
     updateProduct,
     deleteProduct,
     addToWishlist,
+    addToHistory,
     rating,
     uploadImages,
     getaProductForUser,
@@ -25,6 +26,7 @@ router.put("/upload/:id", authMiddleware,
      productImgResize,
     uploadImages);
 router.put("/wishlist", authMiddleware, addToWishlist);
+router.put("/history", authMiddleware, addToHistory);
 router.put("/compare", authMiddleware, addToCompare);
 router.put("/cart", authMiddleware, addToCart);
 router.post("/",authMiddleware, createProduct);

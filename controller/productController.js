@@ -7,7 +7,6 @@ const {cloudinaryUploadImg} = require("../utils/cloudinary");
 const fs = require("fs");
 
 const createProduct = asyncHandler(async (req, res) => {
-    console.log("qqqqqq11");
     console.log(req.body);
     try {
         if (req.body.title) {
@@ -18,11 +17,9 @@ const createProduct = asyncHandler(async (req, res) => {
             while (!isSlugUnique) {
                 const existingProduct = await Product.findOne({slug: slug});
                 if (existingProduct) {
-                    // Slug уже существует, добавляем счетчик к slug
                     slug = `${slug}-${counter}`;
                     counter++;
                 } else {
-                    // Уникальный slug найден
                     isSlugUnique = true;
                 }
             }
@@ -55,7 +52,6 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const rating = asyncHandler(async (req, res) => {
-    console.log("222")
     const {_id} = req.user;
     const {star, productId, comment} = req.body;
     try {
@@ -139,7 +135,7 @@ const getaProductForUser = asyncHandler(async (req, res) => {
     //validateMongoDbId(id);
     try {
         const findProducts = await Product.find({user: id});
-        ;
+
         res.json(findProducts);
     } catch (error) {
         throw new Error(error);
@@ -216,6 +212,26 @@ const addToWishlist = asyncHandler(async (req, res) => {
             );
             res.json(user);
         }
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const addToHistory = asyncHandler(async (req, res) => {
+    const {_id} = req.user._id;
+    const {productId} = req.body;
+    try {
+        let user = await User.findByIdAndUpdate(
+            _id,
+            {
+                $push: {history: productId},
+            },
+            {
+                new: true,
+            }
+        );
+        res.json(user);
+
     } catch (error) {
         throw new Error(error);
     }
@@ -356,7 +372,6 @@ const orderDelete = asyncHandler(async (req, res) => {
     console.log(buyerIndex)
 
 
-
     console.log(productId)
     const quantityToReduce = req.body.count;
 
@@ -367,8 +382,8 @@ const orderDelete = asyncHandler(async (req, res) => {
     }
 
     product.quantity -= quantityToReduce;
-        await product.save();
-        await user.save();
+    await product.save();
+    await user.save();
 
     res.status(200).json({message: "Buyer removed successfully"});
 
@@ -381,6 +396,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     addToWishlist,
+    addToHistory,
     rating,
     uploadImages,
     getaProductForUser,
